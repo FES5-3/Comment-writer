@@ -1,4 +1,5 @@
 // Dom 요소 가져오기
+//full request 실험
 const $inputAuth = document.querySelector(".input-auth");
 const $inputPw = document.querySelector(".input-pw");
 const $inputComment = document.querySelector("#input-comment");
