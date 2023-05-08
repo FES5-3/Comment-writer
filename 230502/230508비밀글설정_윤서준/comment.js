@@ -1,6 +1,4 @@
 // Dom 요소 가져오기
-//full request 실험
-/// 잘 되나..?
 const $inputAuth = document.querySelector(".input-auth");
 const $inputPw = document.querySelector(".input-pw");
 const $inputComment = document.querySelector("#input-comment");
@@ -15,13 +13,10 @@ let data = JSON.parse(localStorage.getItem("data")) || [];
 let reverse = false;  // 데이터를 반대로 정렬할 지 정하는 변수
 
 
-
-
 //만약 로컬스토리지에 댓글 데이터가 있다면 => 기존 댓글 데이터 불러오기
 if (data.length > 0) {
   renderComment(data);
 }
-
 
 //공백 제거를 위한 trim() 사용
 $inputAuth.addEventListener("input", () => {
@@ -50,16 +45,17 @@ $writeBtn.addEventListener("click", () => {
     }
 
     
-    //비밀글 체크하시겠습니까?를 확인하는 코드
-    if($checkbox.checked){
-      const result = confirm("비밀글로 등록 하시겠습니까?");
-      if(result === true) {
-        $inputComment.value = "비밀글입니다";
+    // 비밀글 체크하시겠습니까?를 확인하는 코드
+    // if($checkbox.checked){
+    //   const result = confirm("비밀글로 등록 하시겠습니까?");
+    //   if(result === true) {
 
-      }else{
-        $checkbox.checked = false;
-      }
-    }
+    //     newCommentData.type = 'hide';
+
+    //   }else{
+    //     $checkbox.checked = false;
+    //   }
+    // }
 
 
 
@@ -90,9 +86,21 @@ function addCommentData() {
         content: $inputComment.value,
         // 댓글이 생성된 시간을 ms단위로 넣어줍니다.
         createdAt: new Date().getTime(),
+        type: 'show'
+
       };
+
+      if ($checkbox.checked) {
+        const result = confirm("비밀글로 등록 하시겠습니까?");
+        if (result === true) {
+          newCommentData.type = 'hide';
+        
+        } else {
+          $checkbox.checked = false;
+        }
+      }
       // 데이터 배열에 위에서만든 newCommentData 객체를 넣어줍니다.
-data.push(newCommentData);
+      data.push(newCommentData);
 
 //로컬스토리지에 data를 저장해줍니다.
 localStorage.setItem("data", JSON.stringify(data));
@@ -101,7 +109,10 @@ $inputAuth.value="";
 $inputPw.value = "";
 $inputComment.value = "";
 $textCounter.textContent = "0/100";
+
+
 return [newCommentData];
+
 }
 
 
@@ -154,7 +165,10 @@ function renderComment(data) {
       $commentInfo.setAttribute("class", "comment-info");
   
       $commentContent.setAttribute("class", "comment-content");
-      $commentContent.textContent = "asfasf";
+      $commentContent.textContent = item.type === 'hide' ? '비밀글입니다.' : item.content;
+      console.log(item.type);
+   
+
   
       $createdAt.setAttribute("class", "createdAt");
       $createdAt.textContent = getCreatedAt(item.createdAt);
@@ -224,12 +238,11 @@ function renderComment(data) {
         deleteComment(item);
       });
 
-      //비밀댓글 버튼에 클릭 이벤트 추가
-      $showBtn.addEventListener("click", () =>{
-        if(prompt("비밀 댓글입니다. 댓글을 보려면 비밀번호를 입력하세요.") === item.password){
-         //비밀로 설정한 "비밀글입니다"가 다시 잘 보이게끔 만들어줘야함
-        }else{
-          alert("비밀번호가 일치하지 않습니다!");
+      $showBtn.addEventListener('click', () => {
+        if (prompt('비밀번호를 입력하세요.') === item.password) {
+          showComment(item, $commentContent);
+        } else {
+          alert('비밀번호가 일치하지 않습니다!');
         }
       });
   
@@ -262,6 +275,18 @@ function renderComment(data) {
       });
     }
   }
+
+  //숨김처리 함수
+  function showComment(item, $commentContent) {
+    if (item.type === 'hide') {
+      item.type = 'show';
+      $commentContent.textContent = item.content;
+    } else {
+      item.type = 'hide';
+      $commentContent.textContent = '비밀글입니다.';
+    }
+  }
+  
 
   //댓글 수정 폼을 열어주는 함수
   function editComment(id){
@@ -316,7 +341,7 @@ function editComplete(id) {
 }
 
 
-// <------------- 제가 수정한 부분 ------------->
+
 function deleteComment(deleteData) {
   const confirmDelete = confirm("정말 삭제하시겠습니까?");
   if (!confirmDelete) {
