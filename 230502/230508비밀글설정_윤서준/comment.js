@@ -8,6 +8,8 @@ const $textCounter = document.querySelector(".text-counter");
 const $orderBtn = document.querySelector(".order-btn");
 const $checkbox = document.querySelector("#hidden-comment");
 
+//실험입니다.
+
 // "data"라는 key를 가진 값이 있으면 그 값을 data 변수에 할당하고, 값이 없는 경우 빈 배열을 할당합니다.
 let data = JSON.parse(localStorage.getItem("data")) || [];
 let reverse = false;  // 데이터를 반대로 정렬할 지 정하는 변수
