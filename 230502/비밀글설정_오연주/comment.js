@@ -257,7 +257,10 @@ function renderComment(data) {
 
       function showComment() {
         if (prompt("비밀번호를 입력하세요.") === item.password) {
-          localStorage.setItem(secretbtn, false)
+          if(item.secretbtn===true)
+          localStorage.setItem(item.secretbtn, false)
+          else
+          localStorage.setItem(item.secretbtn, true)
         } else {
           alert("비밀번호가 일치하지 않습니다!");
         }

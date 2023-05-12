@@ -81,9 +81,12 @@ function addCommentData() {
     content: $inputComment.value,
     // 댓글이 생성된 시간을 ms단위로 넣어줍니다.
     createdAt: new Date().getTime(),
-    // 비밀글 구분을 위해 넣어줍니다.
+
+    // 2023.05.09 비밀글 구현
+    // 비밀글과 일반글 구분을 위해 넣어줍니다.
     type: $checkbox.checked ? "secret" : "normal",
-    // 비밀글 상태 구분을 위해 넣어 줍니다. 초기값으로 hide를 비밀글을 감춥니다. 이후에 비밀번호가 일치하면 show 변경되어 비밀글을 볼 수 있게 처리합니다.
+    // 비밀글 상태 구분을 위해 넣어 줍니다. 초기값으로 hide를 비밀글을 감춥니다. 
+    // 이후에 비밀번호가 일치하면 show 변경되어 비밀글을 볼 수 있게 처리합니다.
     secretState: "hide",
   };
   // 데이터 배열에 위에서만든 newCommentData 객체를 넣어줍니다.
@@ -150,6 +153,9 @@ function renderComment(data) {
   
       $showBtn.setAttribute("class", "show-btn");
       $showBtn.setAttribute("type", "button");
+
+      // 비밀글 일때만 showBtn이 보이게 처리하기 위해 초기에는 display: none 주었고,
+      // classList에 active가 있을때 display: inline-block 스타일을 주었습니다.
       if(item.type==="secret") {
         $showBtn.classList.add("active");
       }
@@ -228,10 +234,13 @@ function renderComment(data) {
     $commentLists.appendChild($commentItem);
 
     $auth.textContent = item.auth;
+
+    // 2023.05.09 회고 비밀글 구현
     // 이 부분이 innerHTML로 되어있네요 textContent로 바꿔주었습니다.
     // 여기서 type를 이용해서 분기 처리 해줍니다.
+    // 타입이 비밀글 이라면 '비밀글입니다.' 라는 내용을 넣고 그렇지 않으면 데이터의 댓글 내용을 그대로 넣어줍니다.
     $commentContent.textContent =
-      item.type === "secret" ? "비밀글 입니다." : item.content;
+    item.type === "secret" ? "비밀글 입니다." : item.content;
     $inputEditComment.textContent = item.content;
     $createdAt.textContent = getCreatedAt(item.createdAt);
     $textCounter.textContent = `${item.content.length}/100`;
@@ -295,11 +304,14 @@ function renderComment(data) {
 // 2023.05.09 회고 비밀글 추가
 // 비밀댓글 이벤트
 function showComment(item) {
+  // 매개변수로 받은 item의 id 값을 통해 현재의 댓글 요소를 찾습니다.
   const $commentItem = document.getElementById(item.id);
   const $commentContent = $commentItem.querySelector(".comment-content");
   // data중 인자로 받은 id와 일치하는 데이터를 찾습니다.
   data.find((el, idx) => {
     if (el.id === item.id) {
+      // 현재 데이터의 값을 show로 바꾸어줍니다.
+      // 로컬스토리지에는 따로 저장하지 않습니다.  show 상태가 저장되면 새로고침했을경우 비밀글이 보여지기 때문에입니다.
       item.secretState = "show";
       $commentContent.textContent = data[idx].content;
     }
@@ -329,7 +341,7 @@ function editComplete(item) {
     alert("내용을 입력해주세요!");
     return;
   } 
-  if($inputEditComment.value === item.content&&($editCheckBox.checked&&item.type==="secret")||(!$editCheckBox.checked&&item.type==="normal")){
+  if(($inputEditComment.value === item.content)&&($editCheckBox.checked&&item.type==="secret")||(!$editCheckBox.checked&&item.type==="normal")){
     alert("수정 사항이 없습니다!");
     return;
   }
@@ -362,11 +374,18 @@ function editComplete(item) {
     // 현재 타입이 일반글이라면 화면에 출력되는 댓글 수정해줍니다.
     // 일반글이 아니라면 화면에 출력되는 댓글을 수정하지 않습니다. => 비밀글 일 경우 '비밀글 입니다.'라는 내용이 그대로 출력됩니다.
     if (item.type === "normal") {
+      // 비밀글 해제
+      // 댓글 내용을 현재 데이터의 댓글 내용으로 변경 
       $commentContent.textContent = $inputEditComment.value;
+      // showBtn 숨기기
       $showBtn.classList.remove("active");
     } else {
+      // 비밀글로 전환
+      // 댓글 내용을 '비밀글 입니다.'로 변경
       $commentContent.textContent = "비밀글 입니다.";
+      // showBtn 활성화
       $showBtn.classList.add("active");
+      // showBtn 이미지 변경 
       $showBtn.style.backgroundImage = "url(./img/hide-icon.png)";
 
     }
@@ -384,6 +403,8 @@ function deleteComment(deleteData) {
     //! confirmDelete = 취소버튼 누른경우
     return;
   }
+  // 2023.05.09 취소 버튼을 눌러도 비밀번호가 일치하지 않습니다라는 aleart창이 출력되는 오류수정
+  // null 값을 예외처리
   const inputPassword = prompt("비밀번호를 입력해주세요.");
   if (inputPassword === null) return;
   if (inputPassword !== deleteData.password) {
