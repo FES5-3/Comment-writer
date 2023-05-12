@@ -47,18 +47,6 @@ $writeBtn.addEventListener("click", () => {
     }
 
     
-    // 비밀글 체크하시겠습니까?를 확인하는 코드
-    // if($checkbox.checked){
-    //   const result = confirm("비밀글로 등록 하시겠습니까?");
-    //   if(result === true) {
-
-    //     newCommentData.type = 'hide';
-
-    //   }else{
-    //     $checkbox.checked = false;
-    //   }
-    // }
-
 
 
     //addCommentData 함수는 현제 입력된 댓글을 data 변수에 추가하는 함수 입니다.
@@ -88,15 +76,15 @@ function addCommentData() {
         content: $inputComment.value,
         // 댓글이 생성된 시간을 ms단위로 넣어줍니다.
         createdAt: new Date().getTime(),
-        type: 'show'
-
+        type: $checkbox.checked ? 'hide' : 'show'
+       
       };
 
       if ($checkbox.checked) {
         const result = confirm("비밀글로 등록 하시겠습니까?");
         if (result === true) {
           newCommentData.type = 'hide';
-        
+          console.log(newCommentData.type);
         } else {
           $checkbox.checked = false;
         }
@@ -112,16 +100,12 @@ $inputPw.value = "";
 $inputComment.value = "";
 $textCounter.textContent = "0/100";
 
-
 return [newCommentData];
 
 }
 
-
-
 function renderComment(data) {
     for (const item of data) {
-  
       const $commentItem = document.createElement("li");
       const $profileBox = document.createElement("div");
       const $userProfile = document.createElement("div");
@@ -167,10 +151,6 @@ function renderComment(data) {
       $commentInfo.setAttribute("class", "comment-info");
   
       $commentContent.setAttribute("class", "comment-content");
-      $commentContent.textContent = item.type === 'hide' ? '비밀글입니다.' : item.content;
-      console.log(item.type);
-   
-
   
       $createdAt.setAttribute("class", "createdAt");
       $createdAt.textContent = getCreatedAt(item.createdAt);
@@ -228,11 +208,24 @@ function renderComment(data) {
       $commentLists.appendChild($commentItem);
   
       $auth.textContent = item.auth;
-      $commentContent.innerHTML = item.content;
+       /// 오류
       $inputEditComment.innerHTML = item.content;
       $createdAt.textContent = getCreatedAt(item.createdAt);
       $textCounter.textContent = `${item.content.length}/100`;
   
+
+      $commentContent.textContent = item.type === 'hide' ? '비밀글입니다.' : item.content;
+      console.log(item.type);
+
+      $showBtn.addEventListener('click', () => {
+        if (prompt('비밀번호를 입력하세요.') === item.password) {
+          showComment(item, $commentContent);
+          $showBtn.disabled = true;
+        } else {
+          alert('비밀번호가 일치하지 않습니다!');
+        }
+      });
+
       // 이벤트 리스너 추가 생성된 요소에 이벤트 리스너를 추가해 줍니다.
       // 삭제 버튼에 클릭 이벤트 추가
       $delBtn.addEventListener("click", () => {
@@ -240,14 +233,7 @@ function renderComment(data) {
         deleteComment(item);
       });
 
-      $showBtn.addEventListener('click', () => {
-        if (prompt('비밀번호를 입력하세요.') === item.password) {
-          showComment(item, $commentContent);
-        } else {
-          alert('비밀번호가 일치하지 않습니다!');
-        }
-      });
-  
+
       // 수정 버튼에 클릭 이벤트 추가
       $editBtn.addEventListener("click", () => {
         // 댓글 수정 함수
@@ -283,6 +269,7 @@ function renderComment(data) {
     if (item.type === 'hide') {
       item.type = 'show';
       $commentContent.textContent = item.content;
+      localStorage.setItem("data", JSON.stringify(data));
     } else {
       item.type = 'hide';
       $commentContent.textContent = '비밀글입니다.';
