@@ -1,55 +1,33 @@
-* {
-  padding: 0;
-  margin: 0;
-}
-
-ul {
-  list-style-type: none;
-}
-
 .title {
   text-align: center;
   margin: 20px 0px;
+  font-size: 30px;
+  font-weight: bold;
 }
-
-.a11y-hidden {
-  clip: rect(1px, 1px, 1px, 1px);
-  clip-path: inset(50%);
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-}
-
 main {
   margin: 0 auto;
   width: calc(100% - 60px);
   padding: 30px;
   max-width: 980px;
 }
-
 section {
   margin-bottom: 20px;
 }
-
 .section-title {
+  font-weight: bold;
   margin-bottom: 20px;
 }
-
 .comment-icon {
   width: 30px;
-  vertical-align: top;
+  vertical-align: middle;
 }
-
 .comment-form,
 .edit-form {
   margin-bottom: 40px;
 }
-
-.comment-form input,
-.edit-form input {
+.comment-form #input-auth,
+.comment-form #input-pw,
+.edit-form #input-comment {
   width: 118px;
   padding: 10px;
   border: 2px solid #eaeaea;
@@ -59,7 +37,6 @@ section {
 .textarea-wrapper {
   border: 2px solid #eaeaea;
 }
-
 #input-comment,
 .input-editComment {
   width: 100%;
@@ -69,7 +46,6 @@ section {
   box-sizing: border-box;
   border: none;
 }
-
 .textarea-footer {
   display: flex;
   justify-content: space-between;
@@ -78,7 +54,6 @@ section {
   align-items: center;
   position: relative;
 }
-
 .text-counter {
   margin-left: 20px;
   font-weight: 500;
@@ -87,22 +62,38 @@ section {
 }
 
 /*비밀글 등록 */
-#hidden-comment {
-  position: absolute;
-  /* right: 130px; */
-  top: 50%;
-  right: 10%;
-  transform: translate(-50%, -50%)
-}
-
-label[for="hidden-comment"] {
+.checkbox-label {
+  position: relative;
   color: #bdbdbd;
   font-size: 14px;
-  padding-left: 680px;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+.checkbox-label::after{
+  content: '';
+  position: absolute;
+  display: inline-block;
+  top: 50%;
+  left: -30px;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background: url(../img/unlock.png) no-repeat left / cover;
+  transition: all 0.5s;
+}
+.checkbox-label.active {
+  color: dodgerblue;
+  font-weight: bold;
+}
+.checkbox-label.active::after{
+  background: url(../img/lock.png) no-repeat left / cover;
 }
 
-.text-box {
-  margin-left: 100px;
+.input-checkbox,
+.input-editCheckbox {
+  width: 20px;
+  vertical-align: middle;
+  display: none;
 }
 
 .comment-box.inactive {
@@ -113,11 +104,9 @@ label[for="hidden-comment"] {
   display: none;
   border: 2px solid #eee;
 }
-
 .edit-form.active {
   display: block;
 }
-
 .write-btn,
 .editComment-btn,
 .cancel-btn {
@@ -129,57 +118,51 @@ label[for="hidden-comment"] {
   border: none;
   font-weight: bold;
 }
-
+.cancel-btn{
+  margin-left: 10px;
+}
 .editComment-btn {
   background-color: gold;
   color: black;
 }
-
 .cancel-btn {
   background-color: #eee;
-  color: black
+  color: black;
 }
 
 .comment-item {
   border-bottom: 1px solid #bdbdbd;
   padding-bottom: 15px;
 }
-
 .user-profile {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
   gap: 8px;
 }
-
 .profile-img {
   width: 44px;
   height: 44px;
   border-radius: 50%;
 }
-
 .auth {
   margin-left: 3px;
   font-size: 16px;
   font-weight: bold;
 }
-
 .comment-item:not(:last-child) {
   margin-bottom: 20px;
 }
-
 .comment-content {
   margin-bottom: 5px;
   margin-left: 10px;
   white-space: pre-wrap;
 }
-
 .createdAt {
   font-size: 12px;
   color: #bdbdbd;
   margin-left: 10px;
 }
-
 .comment-info.inactive {
   display: none;
 }
@@ -189,7 +172,6 @@ label[for="hidden-comment"] {
   align-items: center;
   justify-content: space-between;
 }
-
 .edit-comment {
   display: none;
   width: 100%;
@@ -198,11 +180,9 @@ label[for="hidden-comment"] {
   padding: 20px;
   box-sizing: border-box;
 }
-
 .edit-comment.active {
   display: block;
 }
-
 .edit-btn,
 .show-btn,
 .del-btn {
@@ -211,19 +191,26 @@ label[for="hidden-comment"] {
   border: none;
   cursor: pointer;
 }
-
+.show-btn{
+  vertical-align: top;
+}
+.input-editCheckbox {
+  width: 20px;
+  vertical-align: middle;
+}
 .edit-btn {
-  background: url(./img/edit-icon.png) no-repeat center / 24px;
+  background: url("../img/edit-icon.png") no-repeat center / 24px;
 }
-
 .show-btn {
-  background: url(./img/show-icon.png) no-repeat center / 24px;
+  background: url("../img/hide-icon.png") no-repeat center / 24px;
+  display: none;
 }
-
+.show-btn.active {
+  display: inline-block;
+}
 .del-btn {
-  background: url(./img/delete-icon.png) no-repeat center / 24px;
+  background: url("../img/delete-icon.png") no-repeat center / 24px;
 }
-
 .order-btn {
   padding: 5px 10px;
   border: 2px solid #bdbdbd;
@@ -232,14 +219,12 @@ label[for="hidden-comment"] {
   margin-bottom: 10px;
   cursor: pointer;
 }
-
 .order-btn img {
   width: 16px;
   height: 16px;
   vertical-align: bottom;
   transition: all 0.5s;
 }
-
 .order-btn.up img {
   transform: rotate(-180deg);
 }
