@@ -269,6 +269,7 @@ function renderComment(data) {
     if (item.type === 'hide') {
       item.type = 'show';
       $commentContent.textContent = item.content;
+      localStorage.setItem("data", JSON.stringify(data));
     } else {
       item.type = 'hide';
       $commentContent.textContent = '비밀글입니다.';
