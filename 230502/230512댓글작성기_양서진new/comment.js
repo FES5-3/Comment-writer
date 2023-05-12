@@ -10,12 +10,16 @@ const $checkbox = document.querySelector("#hidden-comment");
 
 // "data"라는 key를 가진 값이 있으면 그 값을 data 변수에 할당하고, 값이 없는 경우 빈 배열을 할당합니다.
 let data = JSON.parse(localStorage.getItem("data")) || [];
-let reverse = false; // 데이터를 반대로 정렬할 지 정하는 변수
+let reverse = false;  // 데이터를 반대로 정렬할 지 정하는 변수
+
+
+
 
 //만약 로컬스토리지에 댓글 데이터가 있다면 => 기존 댓글 데이터 불러오기
 if (data.length > 0) {
   renderComment(data);
 }
+
 
 //공백 제거를 위한 trim() 사용
 $inputAuth.addEventListener("input", () => {
@@ -31,7 +35,7 @@ $writeBtn.addEventListener("click", () => {
   //유효성 검사 (작성자나, 비멀번호가 없을 경우)
   if (!$inputAuth.value) {
     alert("아이디를 입력해주세요!");
-    return;
+    return
   }
   if ($inputPw.value.length < 4) {
     alert("비밀번호는 최소 4자리 이상입니다!");
@@ -39,20 +43,23 @@ $writeBtn.addEventListener("click", () => {
   }
 
   if (!$inputComment.value.trim()) {
-    alert("댓글을 입력해주세요!");
+    alert('댓글을 입력해주세요!');
     return;
   }
 
-  // 2023.05.09 회고 비밀글 구현
-  // 비밀글 작성을 물어보는 로직
-  if ($checkbox.checked) {
-    const secret = confirm(
-      "현재 댓글은 비밀글로 작성됩니다. 작성 하시겠습니까?"
-    );
-    if (!secret) {
-      return;
-    }
-  }
+
+  //비밀글 체크하시겠습니까?를 확인하는 코드
+  // if ($checkbox.checked) {
+  //   const result = confirm("비밀글로 등록 하시겠습니까?");
+  //   if (result === true) {
+  //     $inputComment.value = "비밀글입니다";
+
+  //   } else {
+  //     $checkbox.checked = false;
+  //   }
+  // }
+
+
 
   //addCommentData 함수는 현제 입력된 댓글을 data 변수에 추가하는 함수 입니다.
   const newCommentData = addCommentData(); //반환되는 값은 새로 생성된 데이터
@@ -82,13 +89,15 @@ function addCommentData() {
     // 댓글이 생성된 시간을 ms단위로 넣어줍니다.
     createdAt: new Date().getTime(),
 
-    // 2023.05.09 비밀글 구현
-    // 비밀글과 일반글 구분을 위해 넣어줍니다.
-    type: $checkbox.checked ? "secret" : "normal",
-    // 비밀글 상태 구분을 위해 넣어 줍니다. 초기값으로 hide를 비밀글을 감춥니다. 
-    // 이후에 비밀번호가 일치하면 show 변경되어 비밀글을 볼 수 있게 처리합니다.
-    secretState: "hide",
+    type: $checkbox.value
   };
+  //양서진수정
+  if($checkbox.checked){
+    newCommentData.type = 'hide'
+  }
+  else{
+    newCommentData.type = 'show'
+  }
   // 데이터 배열에 위에서만든 newCommentData 객체를 넣어줍니다.
   data.push(newCommentData);
 
@@ -99,26 +108,25 @@ function addCommentData() {
   $inputPw.value = "";
   $inputComment.value = "";
   $textCounter.textContent = "0/100";
-  $checkbox.checked = false;
   return [newCommentData];
 }
 
+
+
 function renderComment(data) {
   for (const item of data) {
+
     const $commentItem = document.createElement("li");
     const $profileBox = document.createElement("div");
     const $userProfile = document.createElement("div");
     const $profileImg = document.createElement("img");
     const $auth = document.createElement("span");
     const $commentBtns = document.createElement("div");
-
-    // 2023.05.09 회고 추가 비밀글 구현
     const $showBtn = document.createElement("button");
-
     const $editBtn = document.createElement("button");
     const $delBtn = document.createElement("button");
     const $commentInfo = document.createElement("div");
-    const $commentContent = document.createElement("p");
+    const $commentContent = document.createElement("p"); //글
     const $createdAt = document.createElement("span");
     const $editForm = document.createElement("form");
     const $inputEditComment = document.createElement("textarea");
@@ -127,8 +135,6 @@ function renderComment(data) {
     const $editCommentBtns = document.createElement("div");
     const $cancelBtn = document.createElement("button");
     const $editCommentBtn = document.createElement("button");
-    const $editCheckBox = document.createElement("input");
-    const $chkBoxLabel = document.createElement("label");
 
     // setAttribute 요소에 속성들을 넣습니다.
     $commentItem.setAttribute("class", "comment-item");
@@ -148,23 +154,14 @@ function renderComment(data) {
 
     $editBtn.setAttribute("class", "edit-btn");
 
-    // 2023.05.09 회고 비밀글 추가
-    // 비밀글 버튼 추가
-  
-      $showBtn.setAttribute("class", "show-btn");
-      $showBtn.setAttribute("type", "button");
-
-      // 비밀글 일때만 showBtn이 보이게 처리하기 위해 초기에는 display: none 주었고,
-      // classList에 active가 있을때 display: inline-block 스타일을 주었습니다.
-      if(item.type==="secret") {
-        $showBtn.classList.add("active");
-      }
+    $showBtn.setAttribute("class", "show-btn");
 
     $delBtn.setAttribute("class", "del-btn");
 
     $commentInfo.setAttribute("class", "comment-info");
 
     $commentContent.setAttribute("class", "comment-content");
+    $commentContent.textContent = "asfasf";
 
     $createdAt.setAttribute("class", "createdAt");
     $createdAt.textContent = getCreatedAt(item.createdAt);
@@ -183,14 +180,6 @@ function renderComment(data) {
     $textCounter.setAttribute("class", "text-counter");
     $textCounter.textContent = "0/100";
 
-    $chkBoxLabel.setAttribute("for", `input-editCheckbox${item.id}`);
-    $chkBoxLabel.setAttribute("class", `label-chkbox`);
-    $chkBoxLabel.textContent = "비밀글 등록";
-    $editCheckBox.setAttribute("type", "checkbox");
-    $editCheckBox.setAttribute("id", `input-editCheckbox${item.id}`);
-    if (item.type === "secret") {
-      $editCheckBox.checked = true;
-    }
     $editCommentBtns.setAttribute("class", "editComment-btns");
 
     $cancelBtn.setAttribute("class", "cancel-btn");
@@ -209,14 +198,15 @@ function renderComment(data) {
     $userProfile.appendChild($auth);
 
     $profileBox.appendChild($commentBtns);
-  
     $commentBtns.appendChild($showBtn);
-
     $commentBtns.appendChild($editBtn);
     $commentBtns.appendChild($delBtn);
 
     $commentItem.appendChild($commentInfo);
+
+  
     $commentInfo.appendChild($commentContent);
+
     $commentInfo.appendChild($createdAt);
 
     $commentItem.appendChild($editForm);
@@ -226,24 +216,19 @@ function renderComment(data) {
     $textareaFooter.appendChild($textCounter);
     $textareaFooter.appendChild($editCommentBtns);
 
-    $editCommentBtns.appendChild($chkBoxLabel);
-    $editCommentBtns.appendChild($editCheckBox);
     $editCommentBtns.appendChild($cancelBtn);
     $editCommentBtns.appendChild($editCommentBtn);
 
     $commentLists.appendChild($commentItem);
 
     $auth.textContent = item.auth;
-
-    // 2023.05.09 회고 비밀글 구현
-    // 이 부분이 innerHTML로 되어있네요 textContent로 바꿔주었습니다.
-    // 여기서 type를 이용해서 분기 처리 해줍니다.
-    // 타입이 비밀글 이라면 '비밀글입니다.' 라는 내용을 넣고 그렇지 않으면 데이터의 댓글 내용을 그대로 넣어줍니다.
-    $commentContent.textContent =
-    item.type === "secret" ? "비밀글 입니다." : item.content;
-    $inputEditComment.textContent = item.content;
+    $commentContent.innerHTML = item.content;
+    $inputEditComment.innerHTML = item.content;
     $createdAt.textContent = getCreatedAt(item.createdAt);
     $textCounter.textContent = `${item.content.length}/100`;
+
+
+    $commentContent.textContent = item.type === 'hide' ? '비밀글입니다.' : item.content;
 
     // 이벤트 리스너 추가 생성된 요소에 이벤트 리스너를 추가해 줍니다.
     // 삭제 버튼에 클릭 이벤트 추가
@@ -252,20 +237,12 @@ function renderComment(data) {
       deleteComment(item);
     });
 
-    // 2023.05.09 회고 비밀글 추가
     //비밀댓글 버튼에 클릭 이벤트 추가
     $showBtn.addEventListener("click", () => {
-      if (item.secretState === "hide") {
-        const inputPassoword = prompt(
-          "비밀 댓글입니다. 댓글을 보려면 비밀번호를 입력하세요."
-        );
-        if (inputPassoword === null) return;
-        if (inputPassoword === item.password) {
-          $showBtn.style.backgroundImage = "url(./img/show-icon.png)";
-          showComment(item);
-        } else {
-          alert("비밀번호가 일치하지 않습니다!");
-        }
+      if (prompt("비밀 댓글입니다. 댓글을 보려면 비밀번호를 입력하세요.") === item.password) {
+        //비밀로 설정한 "비밀글입니다"가 다시 잘 보이게끔 만들어줘야함
+      } else {
+        alert("비밀번호가 일치하지 않습니다!");
       }
     });
 
@@ -273,9 +250,7 @@ function renderComment(data) {
     $editBtn.addEventListener("click", () => {
       // 댓글 수정 함수
       // 현재 prompt에 입력한 비밀번호와 현재 데이터의 password 값이 같다면
-      const inputPassoword = prompt("비밀번호를 입력하세요.");
-      if (inputPassoword === null) return;
-      if (inputPassoword === item.password) {
+      if (prompt("비밀번호를 입력하세요.") === item.password) {
         editComment(item.id);
       } else {
         alert("비밀번호가 일치하지 않습니다!");
@@ -296,26 +271,9 @@ function renderComment(data) {
     // 수정완료 버튼 이벤트 추가
     $editCommentBtn.addEventListener("click", () => {
       // 수정 완료 함수 실행
-      editComplete(item);
+      editComplete(item.id);
     });
   }
-}
-
-// 2023.05.09 회고 비밀글 추가
-// 비밀댓글 이벤트
-function showComment(item) {
-  // 매개변수로 받은 item의 id 값을 통해 현재의 댓글 요소를 찾습니다.
-  const $commentItem = document.getElementById(item.id);
-  const $commentContent = $commentItem.querySelector(".comment-content");
-  // data중 인자로 받은 id와 일치하는 데이터를 찾습니다.
-  data.find((el, idx) => {
-    if (el.id === item.id) {
-      // 현재 데이터의 값을 show로 바꾸어줍니다.
-      // 로컬스토리지에는 따로 저장하지 않습니다.  show 상태가 저장되면 새로고침했을경우 비밀글이 보여지기 때문에입니다.
-      item.secretState = "show";
-      $commentContent.textContent = data[idx].content;
-    }
-  });
 }
 
 //댓글 수정 폼을 열어주는 함수
@@ -328,25 +286,16 @@ function editComment(id) {
 }
 
 // 수정 완료 함수
-function editComplete(item) {
+function editComplete(id) {
   // 현재 수정할 댓글의 id값을 받습니다.
   // dom에서 id에 해당되는 요소를 찾습니다.
-  const $commentItem = document.getElementById(item.id);
-  const $editCheckBox = $commentItem.querySelector(
-    `#input-editCheckbox${item.id}`
-  );
+  const $commentItem = document.getElementById(id);
   const $inputEditComment = $commentItem.querySelector(".input-editComment");
   // 만약에 수정 댓글창에 내용이 없다면
   if (!$inputEditComment.value.trim()) {
     alert("내용을 입력해주세요!");
     return;
-  } 
-  if(($inputEditComment.value === item.content)&&($editCheckBox.checked&&item.type==="secret")||(!$editCheckBox.checked&&item.type==="normal")){
-    alert("수정 사항이 없습니다!");
-    return;
-  }
-  
-  // ==수정내용==
+  } // ==수정내용==
   // 수정 전 사용자에게 수정사항을 한번 더 물어보는 과정을 추가
   if (confirm("정말 수정 하시겠습니까?")) {
     // id에 해당하는 댓글의 commentInfo를 찾습니다.
@@ -355,46 +304,30 @@ function editComplete(item) {
     const $editForm = $commentItem.querySelector(".edit-form");
     // id에 해당하는 댓글의 내용을 찾습니다.
     const $commentContent = $commentItem.querySelector(".comment-content");
-    // id에 해당하는 비밀글 보기 버튼을 찾습니다.
-    const $showBtn = $commentItem.querySelector(".show-btn");
-    data.find((el, idx) => {
-      if (el.id === item.id) {
-        data[idx].content = $inputEditComment.value;
-        $editCheckBox.checked
-          ? (data[idx].type = "secret")
-          : (data[idx].type = "normal");
-          // 만약 show 상태에서 비밀글로 전환한다면 secretState = "hide"로 바꿔야 하기 때문
-          $editCheckBox.checked 
-          ? (data[idx].secretState = "hide")
-          : null;
-      }
-    });
-    // 2023.05.09 회고 비밀글 구현
-    // 여기도 innerHTML로 되어있었네요. 수정했습니다.
-    // 현재 타입이 일반글이라면 화면에 출력되는 댓글 수정해줍니다.
-    // 일반글이 아니라면 화면에 출력되는 댓글을 수정하지 않습니다. => 비밀글 일 경우 '비밀글 입니다.'라는 내용이 그대로 출력됩니다.
-    if (item.type === "normal") {
-      // 비밀글 해제
-      // 댓글 내용을 현재 데이터의 댓글 내용으로 변경 
-      $commentContent.textContent = $inputEditComment.value;
-      // showBtn 숨기기
-      $showBtn.classList.remove("active");
-    } else {
-      // 비밀글로 전환
-      // 댓글 내용을 '비밀글 입니다.'로 변경
-      $commentContent.textContent = "비밀글 입니다.";
-      // showBtn 활성화
-      $showBtn.classList.add("active");
-      // showBtn 이미지 변경 
-      $showBtn.style.backgroundImage = "url(./img/hide-icon.png)";
+    // id에 해당하는 댓글의 수정 인풋을 찾습니다.
 
-    }
+    // 데이터 수정 로직
+    // 수정할 데이터를 알아내기 위해 find 사용(데이터를 찾으면 바로 for문을 빠져 나가기 때문에 효율이 좋음)
+    // 수정된 댓글에 해당되는 댓글 데이터의 내용 값을 변경해줍니다.
+    // ==수정내용==
+    // let editIdx;
+    // data.find((el, idx) => {
+    //   if (el.id === id) return editIdx=idx;
+    // });
+    // data[editIdx].content = $inputEditComment.value
+    // 위 코드에서 아래 코드로 수정
+    data.find((el, idx) => {
+      if (el.id === id) data[idx].content = $inputEditComment.value;
+    });
+    $commentContent.innerHTML = $inputEditComment.value;
+    // 로컬스토리지에 변경된 데이터를 넣어줍니다.
     localStorage.setItem("data", JSON.stringify(data));
     // 댓글 수정창을 없애고, 댓글을 다시 보여 줍니다.
     $commentInfo.classList.remove("inactive");
     $editForm.classList.remove("active");
   }
 }
+
 
 // <------------- 제가 수정한 부분 ------------->
 function deleteComment(deleteData) {
@@ -403,10 +336,7 @@ function deleteComment(deleteData) {
     //! confirmDelete = 취소버튼 누른경우
     return;
   }
-  // 2023.05.09 취소 버튼을 눌러도 비밀번호가 일치하지 않습니다라는 aleart창이 출력되는 오류수정
-  // null 값을 예외처리
   const inputPassword = prompt("비밀번호를 입력해주세요.");
-  if (inputPassword === null) return;
   if (inputPassword !== deleteData.password) {
     alert("비밀번호가 일치하지 않습니다!");
     return;
@@ -421,6 +351,8 @@ function deleteComment(deleteData) {
   deleteElement.remove();
   alert("삭제가 완료되었습니다.");
 }
+
+
 
 // 데이터 정렬 변경 함수
 // reverse, sort=> 날짜 순으로 내림차순으로
@@ -466,8 +398,12 @@ function getCreatedAt(unixTime) {
   )}:${minute.slice(-2)}`;
 }
 
+
+
+
 //비밀글로 등록하기를 체크한 댓글만 렌더링시 show-img를 추가하고  show-img 클릭시 비밀번호를 입력받아야만 ****에서 -> 본래 작성했던 사용자 이름과 ,텍스트가 보이게 바꿔야 함
 
 //추가로 비밀글 등록시 텍스트가 비밀글입니다 로 바뀌기 전에 기존의 값을 저장하고 있어야 함 그래야 나중에 비밀글 보기 버튼을 클릭했을 때 원래 텍스트를 보여줄 수 있음
+
 
 //로컬스토리지 내에 댓글마다 타입을 추가해서 일반 댓글과 비밀댓글을 구분해서 저장하게 끔 만든다.
