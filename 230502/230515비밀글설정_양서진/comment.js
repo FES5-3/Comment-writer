@@ -78,18 +78,21 @@ function addCommentData() {
     // 댓글이 생성된 시간을 ms단위로 넣어줍니다.
     createdAt: new Date().getTime(),
   };
+
   //양서진1
-  if ($checkbox = checked) {
-    const result = prompt('비밀글 설정하시겠습니까?')
-    if (result) {
+  if ($checkbox.checked) {//비밀글등록 체크시
+    const result = confirm('비밀글 설정하시겠습니까?')
+    if (result) { //네 누르면
       newCommentData.type = 'hide'
       console.log('hide')
-    } else {
+    } else { //취소 누르면
       return;
     }
-  } else {
+  } else {//비밀글등록 체크안할시
     newCommentData.type = 'show'
   }
+
+
   // 데이터 배열에 위에서만든 newCommentData 객체를 넣어줍니다.
   data.push(newCommentData);
 
@@ -231,12 +234,13 @@ function renderComment(data) {
         const inputPw = prompt(
           "비밀 댓글입니다. 댓글을 보려면 비밀번호를 입력하세요."
         );
-        if (inputPw === null) return;
-        if (inputPw === item.password) {
-          showComment(item);
-        } else {
+        if (inputPw === item.password) { //비밀번호 일치시
+          showComment(item); //원래 글 보여주기...밑에
+        } else { //비밀번호 불일치시
           alert("비밀번호가 일치하지 않습니다!");
         }
+        if (inputPw === null) return; //입력x
+
       }
     });
 
@@ -270,18 +274,15 @@ function renderComment(data) {
   }
 }
 
-//양서진4
-function showComment(item) {
-  // 매개변수로 받은 item의 id 값을 통해 현재의 댓글 요소를 찾습니다.
-  const $commentItem = document.getElementById(item.id);
-  const $commentContent = $commentItem.querySelector(".comment-content");
-  // data중 인자로 받은 id와 일치하는 데이터를 찾습니다.
+//양서진4, 종태님코드 참조
+function showComment(item) { 
+  const $commentItem = document.getElementById(item.id); 
+  const $commentContent = $commentItem.querySelector(".comment-content"); // item의 id에 해당하는 comment-content클래스 요소 선택
   data.find((el, idx) => {
-    if (el.id === item.id) {
-      // 현재 데이터의 값을 show로 바꾸어줍니다.
-      // 로컬스토리지에는 따로 저장하지 않습니다.  show 상태가 저장되면 새로고침했을경우 비밀글이 보여지기 때문에입니다.
-      item.type = "show";
-      $commentContent.textContent = data[idx].content;
+    if (el.id === item.id) { //data중 인자로 받은 id랑 매개변수로 받은 id값이 일치하는 데이터 찾고
+
+      item.type = "show"; 
+      $commentContent.textContent = data[idx].content; //해당 id의 데이터가 존재하는 인덱스 선택
 
     }
   });
@@ -331,16 +332,11 @@ function editComplete(id) {
 
 
     //양서진5
-    data.find((el, idx) => {
-      if (el.id === id) {data[idx].content = $inputEditComment.value;}
-      $editCheckBox.checked
-      ? (data[idx].type = "secret")
-      : (data[idx].type = "normal");
-      // 만약 show 상태에서 비밀글로 전환한다면 secretState = "hide"로 바꿔야 하기 때문
-      $editCheckBox.checked 
-      ? (data[idx].type = "hide")
-      : null;
-    });
+    // data.find((el, idx) => {
+    //   if (el.id === id) { data[idx].content = $inputEditComment.value; } $editCheckBox.checked ? (data[idx].type = "secret") : (data[idx].type = "normal");
+    //   // 만약 show 상태에서 비밀글로 전환한다면 secretState = "hide"로 바꿔야 하기 때문
+    //   $editCheckBox.checked ? (data[idx].type = "hide") : null;
+    // });
     $commentContent.innerHTML = $inputEditComment.value;
     // 로컬스토리지에 변경된 데이터를 넣어줍니다.
     localStorage.setItem("data", JSON.stringify(data));
