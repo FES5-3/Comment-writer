@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko-KR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>댓글 작성기</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1 class="title">댓글 작성기</h1>
+    </header>
+    <main>
+      <section>
+        <h2 class="section-title">
+          <img class="comment-icon" src="./img/comment-icon.png" alt="" /> 댓글
+        </h2>
+        <form class="comment-form">
+          <label class="a11y-hidden" for="auth">작성자</label>
+          <input
+            id="auth"
+            class="input-auth"
+            type="text"
+            placeholder="작성자"
+            maxlength="8"
+          />
+          <label class="a11y-hidden" for="pw">비밀번호</label>
+          <input
+            class="input-pw"
+            id="pw"
+            type="password"
+            placeholder="비밀번호"
+            maxlength="16"
+          />
+          <div class="textarea-wrapper">
+            <label class="a11y-hidden" for="input-comment">내용</label>
+            <textarea
+              id="input-comment"
+              placeholder="개인정보를 공용 및 요청하거나, 명예훼손, 무단 광고, 불법 정보 유포시 삭제될 수 있으며, 이에 대한 민형사상 책임은 게시자에게 있습니다."
+              maxlength="100"
+            ></textarea>
+            <div class="textarea-footer">
+              <span class="text-counter">0/100</span>
+              <label for="hidden-comment">비밀글 등록</label>
+                <input type="checkbox" id="hidden-comment" class="text-box">
+              <button class="write-btn" type="button">등록하기</button>
+            </div>
+          </div>
+        </form>
+      </section>
+      <button class="order-btn" type="button">
+        최신순
+        <img src="./img/down-icon.png" alt="최신순 화살표 아이콘 이미지" />
+      </button>
+      <ul class="comment-lists">
+        <!-- 댓글목록 -->
+      </ul>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
+    <script src="comment.js"></script>
+  </body>
+</html>
