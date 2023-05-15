@@ -14,7 +14,6 @@ const $checkbox = document.querySelector("#hidden-comment");
 let data = JSON.parse(localStorage.getItem("data")) || [];
 let reverse = false;  // 데이터를 반대로 정렬할 지 정하는 변수
 
-
 //만약 로컬스토리지에 댓글 데이터가 있다면 => 기존 댓글 데이터 불러오기
 if (data.length > 0) {
   renderComment(data);
@@ -352,7 +351,6 @@ function deleteComment(deleteData) {
   deleteElement.remove();
   alert("삭제가 완료되었습니다.");
 }
-
 
 
 // 데이터 정렬 변경 함수
