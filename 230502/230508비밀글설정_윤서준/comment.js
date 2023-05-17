@@ -226,7 +226,7 @@ function renderComment(data) {
     $showBtn.addEventListener("click", () => {
       if (prompt("비밀번호를 입력하세요.") === item.password) {
         showComment(item, $commentContent);
-        $showBtn.disabled = true;
+        $showBtn.style.display = 'none';
       } else {
         alert("비밀번호가 일치하지 않습니다!");
       }
