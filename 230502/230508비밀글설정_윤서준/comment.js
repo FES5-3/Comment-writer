@@ -77,15 +77,18 @@ function addCommentData() {
     const result = confirm("비밀글로 등록 하시겠습니까?");
     if (result === true) {
       newCommentData.type = "hide";
+     
     } else {
       $checkbox.checked = false;
       return;
     }
   }
 
+  //checked가 아니라면 show로 type를 넣어주어야 합니다.
   else{
     newCommentData.type = "show"
   }
+
   // 데이터 배열에 위에서만든 newCommentData 객체를 넣어줍니다.
   data.push(newCommentData);
 
@@ -96,8 +99,9 @@ function addCommentData() {
   $inputPw.value = "";
   $inputComment.value = "";
   $textCounter.textContent = "0/100";
+ $checkbox.checked = false;
+ return [newCommentData];
 
-  return [newCommentData];
 }
 
 function renderComment(data) {
@@ -122,6 +126,8 @@ function renderComment(data) {
     const $cancelBtn = document.createElement("button");
     const $editCommentBtn = document.createElement("button");
 
+
+
     // setAttribute 요소에 속성들을 넣습니다.
     $commentItem.setAttribute("class", "comment-item");
     $commentItem.setAttribute("id", item.id);
@@ -141,6 +147,11 @@ function renderComment(data) {
     $editBtn.setAttribute("class", "edit-btn");
 
     $showBtn.setAttribute("class", "show-btn");
+
+    if(item.type==="hide") {
+      $showBtn.classList.add("active");
+    }
+
 
     $delBtn.setAttribute("class", "del-btn");
 
@@ -204,14 +215,13 @@ function renderComment(data) {
     $commentLists.appendChild($commentItem);
 
     $auth.textContent = item.auth;
-    /// 오류
     $inputEditComment.innerHTML = item.content;
     $createdAt.textContent = getCreatedAt(item.createdAt);
     $textCounter.textContent = `${item.content.length}/100`;
 
     $commentContent.textContent =
       item.type === "hide" ? "비밀글입니다." : item.content;
-    console.log(item.type);
+    
 
     $showBtn.addEventListener("click", () => {
       if (prompt("비밀번호를 입력하세요.") === item.password) {
@@ -258,6 +268,14 @@ function renderComment(data) {
     });
   }
 }
+
+
+// function checkShowHide(item){
+//   if( item.type === "show"){
+   
+//   }
+// }
+
 
 //숨김처리 함수
 function showComment(item, $commentContent) {

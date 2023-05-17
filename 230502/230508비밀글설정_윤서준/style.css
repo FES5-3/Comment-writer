@@ -184,7 +184,13 @@
   }
   .show-btn{
     background: url(./img/show-icon.png) no-repeat center / 24px;
+    display: none;
   }
+
+  .show-btn.active{
+    display: inline-block;
+  }
+
   .del-btn {
     background: url(./img/delete-icon.png) no-repeat center / 24px;
   }
