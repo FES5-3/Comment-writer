@@ -8,11 +8,9 @@ const $textCounter = document.querySelector(".text-counter");
 const $orderBtn = document.querySelector(".order-btn");
 const $checkbox = document.querySelector("#hidden-comment");
 
-//실험입니다.
-
 // "data"라는 key를 가진 값이 있으면 그 값을 data 변수에 할당하고, 값이 없는 경우 빈 배열을 할당합니다.
 let data = JSON.parse(localStorage.getItem("data")) || [];
-let reverse = false;  // 데이터를 반대로 정렬할 지 정하는 변수
+let reverse = false; // 데이터를 반대로 정렬할 지 정하는 변수
 
 //만약 로컬스토리지에 댓글 데이터가 있다면 => 기존 댓글 데이터 불러오기
 if (data.length > 0) {
@@ -21,271 +19,268 @@ if (data.length > 0) {
 
 //공백 제거를 위한 trim() 사용
 $inputAuth.addEventListener("input", () => {
-    $inputAuth.value = $inputAuth.value.trim();
+  $inputAuth.value = $inputAuth.value.trim();
 });
 
 //댓글 입력 textarea에 글자가 입력될떄 마다 textCounter의 textContent에 현제 입려력된 글자의 길이를 넣습니다.
-$inputComment.addEventListener("input", (e) =>{
-    $textCounter.textContent = `${e.target.value.length}/100`;
+$inputComment.addEventListener("input", (e) => {
+  $textCounter.textContent = `${e.target.value.length}/100`;
 });
 
 $writeBtn.addEventListener("click", () => {
-    //유효성 검사 (작성자나, 비멀번호가 없을 경우)
-    if(!$inputAuth.value){
-        alert("아이디를 입력해주세요!");
-        return
-    }
-    if ($inputPw.value.length < 4){
-        alert("비밀번호는 최소 4자리 이상입니다!");
-        return;
-    }
+  //유효성 검사 (작성자나, 비멀번호가 없을 경우)
+  if (!$inputAuth.value) {
+    alert("아이디를 입력해주세요!");
+    return;
+  }
+  if ($inputPw.value.length < 4) {
+    alert("비밀번호는 최소 4자리 이상입니다!");
+    return;
+  }
 
-    if(!$inputComment.value.trim()){
-        alert('댓글을 입력해주세요!');
-        return;
-    }
+  if (!$inputComment.value.trim()) {
+    alert("댓글을 입력해주세요!");
+    return;
+  }
 
-    
+  //addCommentData 함수는 현제 입력된 댓글을 data 변수에 추가하는 함수 입니다.
+  const newCommentData = addCommentData(); //반환되는 값은 새로 생성된 데이터
 
-
-    //addCommentData 함수는 현제 입력된 댓글을 data 변수에 추가하는 함수 입니다.
-    const newCommentData = addCommentData(); //반환되는 값은 새로 생성된 데이터
-
-    if($orderBtn.classList.contains("up")){
-        $commentLists.innerHTML = "";
-        renderComment([...data].reverse());
-    } else{
-        renderComment(newCommentData);
-    }
+  if ($orderBtn.classList.contains("up")) {
+    $commentLists.innerHTML = "";
+    renderComment([...data].reverse());
+  } else {
+    renderComment(newCommentData);
+  }
 });
 
 function addCommentData() {
-    const newCommentData = {
-        // uuid.v4() => 고유한 id값을 생성해주는 라이브러리입니다. index.html에 body 맨아래 부분에 script로 라이브러리가 추가되어있습니다.
-        // <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script> => 이겁니다.
-        // 여기서 사용되는 이유는 데이터 저장시 각 댓글마다 고유한 id값을 주기 위해서 입니다.
-        // (uuid는 매 초 10억개의 uuidd을 생성하여 중복될 일이 거의 없다고 합니다.)
-        // 나중에 id값을 통해 해당 댓글을 조회하거나 수정 삭제할 수 있습니다.
-        id: uuid.v4(),
-        // 작성자 input에 입력된 값을 넣어줍니다.
-        auth: $inputAuth.value,
-        // 비밀번호 input에 입력된 값을 넣어줍니다.
-        password: $inputPw.value,
-        // 내용 textarea에 입력된 값을 넣어줍니다.
-        content: $inputComment.value,
-        // 댓글이 생성된 시간을 ms단위로 넣어줍니다.
-        createdAt: new Date().getTime(),
-        type: $checkbox.checked ? 'hide' : 'show'
-       
-      };
+  const newCommentData = {
+    // uuid.v4() => 고유한 id값을 생성해주는 라이브러리입니다. index.html에 body 맨아래 부분에 script로 라이브러리가 추가되어있습니다.
+    // <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script> => 이겁니다.
+    // 여기서 사용되는 이유는 데이터 저장시 각 댓글마다 고유한 id값을 주기 위해서 입니다.
+    // (uuid는 매 초 10억개의 uuidd을 생성하여 중복될 일이 거의 없다고 합니다.)
+    // 나중에 id값을 통해 해당 댓글을 조회하거나 수정 삭제할 수 있습니다.
+    id: uuid.v4(),
+    // 작성자 input에 입력된 값을 넣어줍니다.
+    auth: $inputAuth.value,
+    // 비밀번호 input에 입력된 값을 넣어줍니다.
+    password: $inputPw.value,
+    // 내용 textarea에 입력된 값을 넣어줍니다.
+    content: $inputComment.value,
+    // 댓글이 생성된 시간을 ms단위로 넣어줍니다.
+    createdAt: new Date().getTime(),
+    type: $checkbox.checked ? "hide" : "show",
+  };
 
-      if ($checkbox.checked) {
-        const result = confirm("비밀글로 등록 하시겠습니까?");
-        if (result === true) {
-          newCommentData.type = 'hide';
-          console.log(newCommentData.type);
-        } else {
-          $checkbox.checked = false;
-        }
-      }
-      // 데이터 배열에 위에서만든 newCommentData 객체를 넣어줍니다.
-      data.push(newCommentData);
+  if ($checkbox.checked) {
+    const result = confirm("비밀글로 등록 하시겠습니까?");
+    if (result === true) {
+      newCommentData.type = "hide";
+    } else {
+      $checkbox.checked = false;
+      return;
+    }
+  }
 
-//로컬스토리지에 data를 저장해줍니다.
-localStorage.setItem("data", JSON.stringify(data));
-//모든 input 값들과 text들을 초기화 한다
-$inputAuth.value="";
-$inputPw.value = "";
-$inputComment.value = "";
-$textCounter.textContent = "0/100";
+  else{
+    newCommentData.type = "show"
+  }
+  // 데이터 배열에 위에서만든 newCommentData 객체를 넣어줍니다.
+  data.push(newCommentData);
 
-return [newCommentData];
+  //로컬스토리지에 data를 저장해줍니다.
+  localStorage.setItem("data", JSON.stringify(data));
+  //모든 input 값들과 text들을 초기화 한다
+  $inputAuth.value = "";
+  $inputPw.value = "";
+  $inputComment.value = "";
+  $textCounter.textContent = "0/100";
 
+  return [newCommentData];
 }
 
 function renderComment(data) {
-    for (const item of data) {
-      const $commentItem = document.createElement("li");
-      const $profileBox = document.createElement("div");
-      const $userProfile = document.createElement("div");
-      const $profileImg = document.createElement("img");
-      const $auth = document.createElement("span");
-      const $commentBtns = document.createElement("div");
-      const $showBtn = document.createElement("button");
-      const $editBtn = document.createElement("button");
-      const $delBtn = document.createElement("button");
-      const $commentInfo = document.createElement("div");
-      const $commentContent = document.createElement("p");
-      const $createdAt = document.createElement("span");
-      const $editForm = document.createElement("form");
-      const $inputEditComment = document.createElement("textarea");
-      const $textareaFooter = document.createElement("div");
-      const $textCounter = document.createElement("span");
-      const $editCommentBtns = document.createElement("div");
-      const $cancelBtn = document.createElement("button");
-      const $editCommentBtn = document.createElement("button");
-  
-      // setAttribute 요소에 속성들을 넣습니다.
-      $commentItem.setAttribute("class", "comment-item");
-      $commentItem.setAttribute("id", item.id);
-  
-      $profileBox.setAttribute("class", "profile-box");
-  
-      $userProfile.setAttribute("class", "user-profile");
-  
-      $profileImg.setAttribute("class", "profile-img");
-      $profileImg.setAttribute("src", "./img/profile.png");
-  
-      $auth.setAttribute("class", "auth");
-      $auth.textContent = item.auth;
-  
-      $commentBtns.setAttribute("class", "comment-btns");
-  
-      $editBtn.setAttribute("class", "edit-btn");
- 
-      $showBtn.setAttribute("class", "show-btn");
+  for (const item of data) {
+    const $commentItem = document.createElement("li");
+    const $profileBox = document.createElement("div");
+    const $userProfile = document.createElement("div");
+    const $profileImg = document.createElement("img");
+    const $auth = document.createElement("span");
+    const $commentBtns = document.createElement("div");
+    const $showBtn = document.createElement("button");
+    const $editBtn = document.createElement("button");
+    const $delBtn = document.createElement("button");
+    const $commentInfo = document.createElement("div");
+    const $commentContent = document.createElement("p");
+    const $createdAt = document.createElement("span");
+    const $editForm = document.createElement("form");
+    const $inputEditComment = document.createElement("textarea");
+    const $textareaFooter = document.createElement("div");
+    const $textCounter = document.createElement("span");
+    const $editCommentBtns = document.createElement("div");
+    const $cancelBtn = document.createElement("button");
+    const $editCommentBtn = document.createElement("button");
 
-      $delBtn.setAttribute("class", "del-btn");
-  
-      $commentInfo.setAttribute("class", "comment-info");
-  
-      $commentContent.setAttribute("class", "comment-content");
-  
-      $createdAt.setAttribute("class", "createdAt");
-      $createdAt.textContent = getCreatedAt(item.createdAt);
-  
-      $editForm.setAttribute("class", "edit-form");
-  
-      $inputEditComment.setAttribute("class", "input-editComment");
-      $inputComment.setAttribute(
-        "placeholder",
-        "개인정보를 공용 및 요청하거나, 명예훼손, 무단 광고, 불법 정보 유포시 삭제될 수 있으며, 이에 대한 민형사상 책임은 게시자에게 있습니다."
-      );
-      $inputComment.setAttribute("maxlength", "100");
-  
-      $textareaFooter.setAttribute("class", "textarea-footer");
-  
-      $textCounter.setAttribute("class", "text-counter");
-      $textCounter.textContent = "0/100";
-  
-      $editCommentBtns.setAttribute("class", "editComment-btns");
-  
-      $cancelBtn.setAttribute("class", "cancel-btn");
-      $cancelBtn.setAttribute("type", "button");
-      $cancelBtn.textContent = "취소하기";
-  
-      $editCommentBtn.setAttribute("class", "editComment-btn");
-      $editCommentBtn.setAttribute("type", "button");
-      $editCommentBtn.textContent = "수정하기";
-  
-      //appebndChild 요소들이 해당되는 부모객체에 자식으로 넣어줍니다.
-      $commentItem.appendChild($profileBox);
-  
-      $profileBox.appendChild($userProfile);
-      $userProfile.appendChild($profileImg);
-      $userProfile.appendChild($auth);
-  
-      $profileBox.appendChild($commentBtns);
-      $commentBtns.appendChild($showBtn);
-      $commentBtns.appendChild($editBtn);
-      $commentBtns.appendChild($delBtn);
-  
-      $commentItem.appendChild($commentInfo);
-      $commentInfo.appendChild($commentContent);
-      $commentInfo.appendChild($createdAt);
-  
-      $commentItem.appendChild($editForm);
-      $editForm.appendChild($inputEditComment);
-      $editForm.appendChild($textareaFooter);
-  
-      $textareaFooter.appendChild($textCounter);
-      $textareaFooter.appendChild($editCommentBtns);
-  
-      $editCommentBtns.appendChild($cancelBtn);
-      $editCommentBtns.appendChild($editCommentBtn);
-  
-      $commentLists.appendChild($commentItem);
-  
-      $auth.textContent = item.auth;
-       /// 오류
-      $inputEditComment.innerHTML = item.content;
-      $createdAt.textContent = getCreatedAt(item.createdAt);
-      $textCounter.textContent = `${item.content.length}/100`;
-  
+    // setAttribute 요소에 속성들을 넣습니다.
+    $commentItem.setAttribute("class", "comment-item");
+    $commentItem.setAttribute("id", item.id);
 
-      $commentContent.textContent = item.type === 'hide' ? '비밀글입니다.' : item.content;
-      console.log(item.type);
+    $profileBox.setAttribute("class", "profile-box");
 
-      $showBtn.addEventListener('click', () => {
-        if (prompt('비밀번호를 입력하세요.') === item.password) {
-          showComment(item, $commentContent);
-          $showBtn.disabled = true;
-        } else {
-          alert('비밀번호가 일치하지 않습니다!');
-        }
-      });
+    $userProfile.setAttribute("class", "user-profile");
 
-      // 이벤트 리스너 추가 생성된 요소에 이벤트 리스너를 추가해 줍니다.
-      // 삭제 버튼에 클릭 이벤트 추가
-      $delBtn.addEventListener("click", () => {
-        // 댓글 삭제 함수
-        deleteComment(item);
-      });
+    $profileImg.setAttribute("class", "profile-img");
+    $profileImg.setAttribute("src", "./img/profile.png");
 
+    $auth.setAttribute("class", "auth");
+    $auth.textContent = item.auth;
 
-      // 수정 버튼에 클릭 이벤트 추가
-      $editBtn.addEventListener("click", () => {
-        // 댓글 수정 함수
-        // 현재 prompt에 입력한 비밀번호와 현재 데이터의 password 값이 같다면
-        if (prompt("비밀번호를 입력하세요.") === item.password) {
-          editComment(item.id);
-        } else {
-          alert("비밀번호가 일치하지 않습니다!");
-        }
-      });
-  
-      // 취소 버튼에 클릭 이벤트 추가
-      $cancelBtn.addEventListener("click", () => {
-        // classList을 이용하여 댓글 요소를 display: none 처리하여 안보이게함
-        $commentInfo.classList.remove("inactive");
-        // classList을 이용하여 댓글 수정 폼을 display: block 처리하여 보이게함
-        $editForm.classList.remove("active");
-      });
-      // 위 에서 댓글 입력창에 textCounter를 바꿔준거 처럼 댓글 수정 창에도 input이 변경되면 textCounter를 바꿔줍니다.
-      $inputEditComment.addEventListener("input", (e) => {
-        $textCounter.textContent = `${e.target.value.length}/100`;
-      });
-      // 수정완료 버튼 이벤트 추가
-      $editCommentBtn.addEventListener("click", () => {
-        // 수정 완료 함수 실행
-        editComplete(item.id);
-      });
-    }
+    $commentBtns.setAttribute("class", "comment-btns");
+
+    $editBtn.setAttribute("class", "edit-btn");
+
+    $showBtn.setAttribute("class", "show-btn");
+
+    $delBtn.setAttribute("class", "del-btn");
+
+    $commentInfo.setAttribute("class", "comment-info");
+
+    $commentContent.setAttribute("class", "comment-content");
+
+    $createdAt.setAttribute("class", "createdAt");
+    $createdAt.textContent = getCreatedAt(item.createdAt);
+
+    $editForm.setAttribute("class", "edit-form");
+
+    $inputEditComment.setAttribute("class", "input-editComment");
+    $inputComment.setAttribute(
+      "placeholder",
+      "개인정보를 공용 및 요청하거나, 명예훼손, 무단 광고, 불법 정보 유포시 삭제될 수 있으며, 이에 대한 민형사상 책임은 게시자에게 있습니다."
+    );
+    $inputComment.setAttribute("maxlength", "100");
+
+    $textareaFooter.setAttribute("class", "textarea-footer");
+
+    $textCounter.setAttribute("class", "text-counter");
+    $textCounter.textContent = "0/100";
+
+    $editCommentBtns.setAttribute("class", "editComment-btns");
+
+    $cancelBtn.setAttribute("class", "cancel-btn");
+    $cancelBtn.setAttribute("type", "button");
+    $cancelBtn.textContent = "취소하기";
+
+    $editCommentBtn.setAttribute("class", "editComment-btn");
+    $editCommentBtn.setAttribute("type", "button");
+    $editCommentBtn.textContent = "수정하기";
+
+    //appebndChild 요소들이 해당되는 부모객체에 자식으로 넣어줍니다.
+    $commentItem.appendChild($profileBox);
+
+    $profileBox.appendChild($userProfile);
+    $userProfile.appendChild($profileImg);
+    $userProfile.appendChild($auth);
+
+    $profileBox.appendChild($commentBtns);
+    $commentBtns.appendChild($showBtn);
+    $commentBtns.appendChild($editBtn);
+    $commentBtns.appendChild($delBtn);
+
+    $commentItem.appendChild($commentInfo);
+    $commentInfo.appendChild($commentContent);
+    $commentInfo.appendChild($createdAt);
+
+    $commentItem.appendChild($editForm);
+    $editForm.appendChild($inputEditComment);
+    $editForm.appendChild($textareaFooter);
+
+    $textareaFooter.appendChild($textCounter);
+    $textareaFooter.appendChild($editCommentBtns);
+
+    $editCommentBtns.appendChild($cancelBtn);
+    $editCommentBtns.appendChild($editCommentBtn);
+
+    $commentLists.appendChild($commentItem);
+
+    $auth.textContent = item.auth;
+    /// 오류
+    $inputEditComment.innerHTML = item.content;
+    $createdAt.textContent = getCreatedAt(item.createdAt);
+    $textCounter.textContent = `${item.content.length}/100`;
+
+    $commentContent.textContent =
+      item.type === "hide" ? "비밀글입니다." : item.content;
+    console.log(item.type);
+
+    $showBtn.addEventListener("click", () => {
+      if (prompt("비밀번호를 입력하세요.") === item.password) {
+        showComment(item, $commentContent);
+        $showBtn.disabled = true;
+      } else {
+        alert("비밀번호가 일치하지 않습니다!");
+      }
+    });
+
+    // 이벤트 리스너 추가 생성된 요소에 이벤트 리스너를 추가해 줍니다.
+    // 삭제 버튼에 클릭 이벤트 추가
+    $delBtn.addEventListener("click", () => {
+      // 댓글 삭제 함수
+      deleteComment(item);
+    });
+
+    // 수정 버튼에 클릭 이벤트 추가
+    $editBtn.addEventListener("click", () => {
+      // 댓글 수정 함수
+      // 현재 prompt에 입력한 비밀번호와 현재 데이터의 password 값이 같다면
+      if (prompt("비밀번호를 입력하세요.") === item.password) {
+        editComment(item.id);
+      } else {
+        alert("비밀번호가 일치하지 않습니다!");
+      }
+    });
+
+    // 취소 버튼에 클릭 이벤트 추가
+    $cancelBtn.addEventListener("click", () => {
+      // classList을 이용하여 댓글 요소를 display: none 처리하여 안보이게함
+      $commentInfo.classList.remove("inactive");
+      // classList을 이용하여 댓글 수정 폼을 display: block 처리하여 보이게함
+      $editForm.classList.remove("active");
+    });
+    // 위 에서 댓글 입력창에 textCounter를 바꿔준거 처럼 댓글 수정 창에도 input이 변경되면 textCounter를 바꿔줍니다.
+    $inputEditComment.addEventListener("input", (e) => {
+      $textCounter.textContent = `${e.target.value.length}/100`;
+    });
+    // 수정완료 버튼 이벤트 추가
+    $editCommentBtn.addEventListener("click", () => {
+      // 수정 완료 함수 실행
+      editComplete(item.id);
+    });
   }
+}
 
-  //숨김처리 함수
-  function showComment(item, $commentContent) {
-    if (item.type === 'hide') {
-      item.type = 'show';
-      $commentContent.textContent = item.content;
-      localStorage.setItem("data", JSON.stringify(data));
-    } else {
-      item.type = 'hide';
-      $commentContent.textContent = '비밀글입니다.';
-    }
+//숨김처리 함수
+function showComment(item, $commentContent) {
+  if (item.type === "hide") {
+    item.type = "show";
+    $commentContent.textContent = item.content;
+    localStorage.setItem("data", JSON.stringify(data));
+  } else {
+    item.type = "hide";
+    $commentContent.textContent = "비밀글입니다.";
   }
-  
+}
 
-  //댓글 수정 폼을 열어주는 함수
-  function editComment(id){
-   const $commentItem = document.getElementById(id);
-   const $commentInfo = $commentItem.querySelector(".comment-info");
-   const $editForm = $commentItem.querySelector(".edit-form");
-   $commentInfo.classList.add("inactive");
-   $editForm.classList.add("active");
-  }
-  
-  // 수정 완료 함수
+//댓글 수정 폼을 열어주는 함수
+function editComment(id) {
+  const $commentItem = document.getElementById(id);
+  const $commentInfo = $commentItem.querySelector(".comment-info");
+  const $editForm = $commentItem.querySelector(".edit-form");
+  $commentInfo.classList.add("inactive");
+  $editForm.classList.add("active");
+}
+
+// 수정 완료 함수
 function editComplete(id) {
   // 현재 수정할 댓글의 id값을 받습니다.
   // dom에서 id에 해당되는 요소를 찾습니다.
@@ -328,8 +323,6 @@ function editComplete(id) {
   }
 }
 
-
-
 function deleteComment(deleteData) {
   const confirmDelete = confirm("정말 삭제하시겠습니까?");
   if (!confirmDelete) {
@@ -351,7 +344,6 @@ function deleteComment(deleteData) {
   deleteElement.remove();
   alert("삭제가 완료되었습니다.");
 }
-
 
 // 데이터 정렬 변경 함수
 // reverse, sort=> 날짜 순으로 내림차순으로
@@ -397,12 +389,8 @@ function getCreatedAt(unixTime) {
   )}:${minute.slice(-2)}`;
 }
 
-
-
-
 //비밀글로 등록하기를 체크한 댓글만 렌더링시 show-img를 추가하고  show-img 클릭시 비밀번호를 입력받아야만 ****에서 -> 본래 작성했던 사용자 이름과 ,텍스트가 보이게 바꿔야 함
 
 //추가로 비밀글 등록시 텍스트가 비밀글입니다 로 바뀌기 전에 기존의 값을 저장하고 있어야 함 그래야 나중에 비밀글 보기 버튼을 클릭했을 때 원래 텍스트를 보여줄 수 있음
-
 
 //로컬스토리지 내에 댓글마다 타입을 추가해서 일반 댓글과 비밀댓글을 구분해서 저장하게 끔 만든다.
