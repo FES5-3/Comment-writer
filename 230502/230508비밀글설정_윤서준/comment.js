@@ -270,12 +270,6 @@ function renderComment(data) {
 }
 
 
-// function checkShowHide(item){
-//   if( item.type === "show"){
-   
-//   }
-// }
-
 
 //숨김처리 함수
 function showComment(item, $commentContent) {
@@ -297,6 +291,8 @@ function editComment(id) {
   $commentInfo.classList.add("inactive");
   $editForm.classList.add("active");
 }
+
+
 
 // 수정 완료 함수
 function editComplete(id) {
@@ -340,6 +336,7 @@ function editComplete(id) {
     $editForm.classList.remove("active");
   }
 }
+
 
 function deleteComment(deleteData) {
   const confirmDelete = confirm("정말 삭제하시겠습니까?");
