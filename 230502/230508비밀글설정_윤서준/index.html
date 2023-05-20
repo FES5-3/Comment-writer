@@ -5,9 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>댓글 작성기</title>
+    <link rel="stylesheet" href="modal.css">
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="reset.css">
   </head>
-  <body>
+  <body>  
     <header>
       <h1 class="title">댓글 작성기</h1>
     </header>
@@ -56,6 +58,21 @@
       <ul class="comment-lists">
         <!-- 댓글목록 -->
       </ul>
+
+      <article class="modal">
+        <h2 class="a11y-hidden">modal</h2>
+        <div class="dim"></div>
+        <form class="modal-form">
+          <h3 class="modal-title">작성자 확인</h3>
+          <p class="modal-text">비밀번호를 입력해주세요.</p>
+          <input class="input-password" type="password" />
+          <div class="modal-btns">
+            <button type="submit" class="btn-confirm">Confirm</button>
+            <button type="button" class="btn-cancel">Cancel</button>
+          </div>
+        </form>
+
+      </article>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
     <script src="comment.js"></script>

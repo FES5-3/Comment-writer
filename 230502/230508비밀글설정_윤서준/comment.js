@@ -7,6 +7,13 @@ const $commentLists = document.querySelector(".comment-lists");
 const $textCounter = document.querySelector(".text-counter");
 const $orderBtn = document.querySelector(".order-btn");
 const $checkbox = document.querySelector("#hidden-comment");
+const $modal = document.querySelector(".modal");
+const $modalInputPw = $modal.querySelector(".input-password");
+const $confirmBtn = $modal.querySelector(".btn-confirm");
+const $cancelBtn = $modal.querySelector(".btn-cancel");
+const $dim = $modal.querySelector(".dim");
+
+
 
 // "data"라는 key를 가진 값이 있으면 그 값을 data 변수에 할당하고, 값이 없는 경우 빈 배열을 할당합니다.
 let data = JSON.parse(localStorage.getItem("data")) || [];
@@ -223,6 +230,9 @@ function renderComment(data) {
       item.type === "hide" ? "비밀글입니다." : item.content;
     
 
+
+
+
     $showBtn.addEventListener("click", () => {
       if (prompt("비밀번호를 입력하세요.") === item.password) {
         showComment(item, $commentContent);
@@ -241,6 +251,7 @@ function renderComment(data) {
 
     // 수정 버튼에 클릭 이벤트 추가
     $editBtn.addEventListener("click", () => {
+      // modalPrompt();
       // 댓글 수정 함수
       // 현재 prompt에 입력한 비밀번호와 현재 데이터의 password 값이 같다면
       if (prompt("비밀번호를 입력하세요.") === item.password) {
@@ -269,13 +280,17 @@ function renderComment(data) {
   }
 }
 
+//모달창 함수
+//일단 css속성을 변경해서 모달창이 화면에 보이게 만들어야 함
+//모달창이 뜨고 비밀번호를 입력하고 confirm을 누르면 
+// 기존 비밀번호와 같은지 확인을 해야 함
+//그리고 기존 비밀번호와 같다면 정상적으로 다음 기능들을 실행하고
+//아니라면 
+//모달창 닫기 버튼을 누르면 모달창이 다시 사라지게 
 
-// function checkShowHide(item){
-//   if( item.type === "show"){
-   
-//   }
-// }
-
+function modalPrompt(){
+  $modal.style.display = 'block';
+}
 
 //숨김처리 함수
 function showComment(item, $commentContent) {
@@ -297,6 +312,8 @@ function editComment(id) {
   $commentInfo.classList.add("inactive");
   $editForm.classList.add("active");
 }
+
+
 
 // 수정 완료 함수
 function editComplete(id) {
@@ -340,6 +357,8 @@ function editComplete(id) {
     $editForm.classList.remove("active");
   }
 }
+
+
 
 function deleteComment(deleteData) {
   const confirmDelete = confirm("정말 삭제하시겠습니까?");
